@@ -2,13 +2,10 @@
 from tkinter import *
 from tkinter import ttk, messagebox, filedialog
 import os
-import txtTopdf
+import re
+import Controller
 ### ************ all command hare  ************* ###
 # to exit forme the app
-'''
-def exitB():
-    root.destroy()
-'''
 
 
 def openfile():
@@ -17,7 +14,7 @@ def openfile():
     urlOpen = filedialog.askopenfilename(initialdir=os.getcwd(), title='Select File', file=((
         ('all file', '*.*'), ("Text Documents", "*.txt"))))  # open file explorer ussing filedialog
     file.set(os.path.basename(urlOpen))  # show the file in entery element
-# txtTopdf.textTopdf()
+# Controller.textTopdf()
 
 
 def fetch():
@@ -26,15 +23,30 @@ def fetch():
     fileSplite = file.get().split('.')
     fileSplite[1] = extensions.get()
     newFile = '.'.join(fileSplite)
-    urlSave = filedialog.asksaveasfile(
-        mode='wb', title='Save -'+newFile, defaultextension='.'+fileSplite[1], file=((
+    urlSave = filedialog.asksaveasfile(title='Save -'+newFile, defaultextension='.'+fileSplite[1], file=((
             ('all file', '*.*'), ("Text Documents", "*.txt"))))
-    # print(urlSave)
-    with open(urlOpen, 'rb') as rfile:
-        data = rfile.read()
-        # print(type(data))
-        # print(type(str(data)))
-    txtTopdf.txtTopdfConvert(data, urlSave)
+
+    urlSave.close()  # close the file becose only creating the file
+    # copy path 
+    copyurl = urlSave
+
+    forImg = re.findall(".jpg$ | .jpeg$ |.png$", file.get())
+    
+    # the following try exept will go to controller file
+    if not file.get().endswith(".jpg" or ".jpeg" or ".png" or ".mp3" or ".mp4"):
+        try:
+            Controller.txtTopdfConvert(urlOpen, copyurl.name)
+        except UnicodeDecodeError:
+            messagebox.showerror(title='Error',message='please selecte only writeble file')
+
+    elif forImg:  # regular express true or false to checking the extensions
+        info = Controller.imgTopdf(urlOpen,copyurl.name)
+        messagebox.showerror(title='Error',message=info)
+    else:
+        messagebox.showinfo(title='info',message='please try again')
+
+    
+    
 
 
 # main window configration
@@ -51,7 +63,9 @@ title = Label(root, text='This Is Text Center', justify='center',
 Label(root, text='select file :', bg='white', font=(
     'Serif', 10)).place(x=10, y=50)  # here is label
 Button(root, text='Browse', borderwidth=0, command=openfile).place(
-    x=150, y=50)  # here is browse button configrations
+    x=150, y=50)  # here is browse button 
+
+# making the string variable for storing the values
 file = StringVar()
 filePath = Entry(root, textvariable=file, width=30, borderwidth=2,
                  font=('Serif', 10))  # here is entry configrations
