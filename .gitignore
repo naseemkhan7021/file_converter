@@ -1,2 +1,3 @@
-./debug.log
-.ipynb_checkpoints
+debug.log
+# .ipynb_checkpoints
+__pycache__

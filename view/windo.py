@@ -24,29 +24,34 @@ def fetch():
     fileSplite[1] = extensions.get()
     newFile = '.'.join(fileSplite)
     urlSave = filedialog.asksaveasfile(title='Save -'+newFile, defaultextension='.'+fileSplite[1], file=((
-            ('all file', '*.*'), ("Text Documents", "*.txt"))))
+        ('all file', '*.*'), ("Text Documents", "*.txt"))))
 
     urlSave.close()  # close the file becose only creating the file
-    # copy path 
+    # copy path
     copyurl = urlSave
+    name,ext = os.path.splitext(file.get())
 
-    forImg = re.findall(".jpg$ | .jpeg$ |.png$", file.get())
-    
     # the following try exept will go to controller file
-    if not file.get().endswith(".jpg" or ".jpeg" or ".png" or ".mp3" or ".mp4"):
-        try:
-            Controller.txtTopdfConvert(urlOpen, copyurl.name)
-        except UnicodeDecodeError:
-            messagebox.showerror(title='Error',message='please selecte only writeble file')
+    if ext not in [".jpg", ".jpeg",".png" ,".mp3",".mp4"]:
+        info = Controller.txtTopdfConvert(urlOpen, copyurl.name)
+        if info == True:
+            # show massage if success to make pdf 
+            messagebox.showinfo(title='Success',message='Success to make pdf file')
+        else:
+            # show error in fail to make pdf
+            messagebox.showerror(title='Error',message=info)
 
-    elif forImg:  # regular express true or false to checking the extensions
-        info = Controller.imgTopdf(urlOpen,copyurl.name)
-        messagebox.showerror(title='Error',message=info)
+    elif ext in ['.png','.jpeg','.jpg']:  # regular express true or false to checking the extensions
+        info = Controller.imgTopdf(urlOpen, copyurl.name)
+        if info == True:
+            # show massage if success to make pdf 
+            messagebox.showinfo(title='success',message='success to make pdf file')
+        else:
+            # show error in fail to make pdf 
+            messagebox.showerror(title='Error', message=info)
     else:
-        messagebox.showinfo(title='info',message='please try again')
-
-    
-    
+        # show error if extensions not found 
+        messagebox.showinfo(title='info', message='please try again')
 
 
 # main window configration
@@ -63,7 +68,7 @@ title = Label(root, text='This Is Text Center', justify='center',
 Label(root, text='select file :', bg='white', font=(
     'Serif', 10)).place(x=10, y=50)  # here is label
 Button(root, text='Browse', borderwidth=0, command=openfile).place(
-    x=150, y=50)  # here is browse button 
+    x=150, y=50)  # here is browse button
 
 # making the string variable for storing the values
 file = StringVar()
