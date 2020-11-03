@@ -1,0 +1,7 @@
+Package            Version
+-----------       ---------
+fpdf        -->     v1.7.2
+img2pdf     -->     v0.4.0
+wand        -->     v0.6.3
+pdf2image   -->     v1.14.0
+PyPDF2      -->     v1.26.0
