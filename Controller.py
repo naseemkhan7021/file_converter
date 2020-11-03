@@ -2,9 +2,11 @@ from fpdf import FPDF
 import img2pdf
 import os
 from wand.image import Image, Color
-
+from pdf2image import convert_from_path
+import PyPDF2
 
 # writeble file to pdf file
+
 def txtTopdfConvert(textPath, pdfPath):
     """
     This functions is usefull for making txt file to pdf file 
@@ -48,11 +50,11 @@ def removeAlpha(imgPath):
                 img.background_color = Color('white')
                 img.save(imgPath)
                 noAlpha = True
-                
+
             except Exception as error:
                 print('error on line 37 ', error)
                 noAlpha = False
-                
+
     return noAlpha
 
 # img file to pdf file
@@ -75,6 +77,63 @@ def imgTopdf(imgPath, pdfPath):
         os.remove(pdfPath)
         return 'try to change thare background or use anothor imgage'
 
+
+# now hare is pdf to img converter
+def pdfToImg(pdfPath, imgPath):
+    """
+    This is pdf to img converter using pdf@image covert module 
+    thar is 2 paramiter @pdfPath and @imgPath
+    """
+    print(type(pdfPath))
+    try:
+        images = convert_from_path(str(pdfPath))
+        for img in images:
+            img.save(imgPath, 'JPEG')
+    except Exception as error:
+        print('error in pdftoImg is => ', error)
+        return False
+
+    else:
+        return True
+
+# pdf to text file 
+def pdfTotxt(pdfpath,txtPath):
+    """
+    This is pdf to text converter using pypdf2 module
+    this fungtions extract the text from the pdf file
+    and than make new text file.
+    it's take two paramitars @pdfpaht and @txtpath
+    """
+    try:
+        pdfile = open(pdfpath,'rb')
+        pdfReader = PyPDF2.PdfFileReader(pdfile)
+        # debug the fungtions 
+        print(pdfReader.getDocumentInfo())
+        print(pdfReader.getNumPages())
+
+        # print(' pdf text line 114' ,pdfReader.getPage(1).extractText())
+
+        # open the txt file whare it's located 
+        with open(txtPath,'a') as fw: 
+            # find the all page using loop 
+            for page in range(0,pdfReader.getNumPages()):
+                # lacate the single page using getpage() 
+                pageObject = pdfReader.getPage(page)
+                # extract the txt than save to txt file 
+                fw.write(pageObject.extractText())
+                # return True if not error equired 
+        return True
+
+    except Exception as error:
+        # return False if error equired 
+        print(error)
+        return False
+    finally:
+        # finally close the pdf file 
+        pdfile.close()
+        
+    
+    
 # def examle(oldfile,newfile):
 #     with open(oldfile,'r') as rfile:
 #         data = rfile.read()
