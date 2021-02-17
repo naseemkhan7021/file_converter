@@ -9,7 +9,7 @@ import PyPDF2
 
 def txtTopdfConvert(textPath, pdfPath):
     """
-    This functions is usefull for making txt file to pdf file 
+    This functions is usefull for making txt file to pdf file
     generatore
     it's take two paramiter @textPath and pdfPath
     """
@@ -107,7 +107,7 @@ def pdfTotxt(pdfpath,txtPath):
     try:
         pdfile = open(pdfpath,'rb')
         pdfReader = PyPDF2.PdfFileReader(pdfile)
-        # debug the fungtions 
+        # debug the fungtions
         print(pdfReader.getDocumentInfo())
         print(pdfReader.getNumPages())
 
